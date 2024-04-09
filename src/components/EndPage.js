@@ -1,13 +1,10 @@
 import React from "react";
-import { useLocation } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEnvelope, faCheckCircle } from "@fortawesome/free-solid-svg-icons";
 import Header from "./Header";
 import Footer from "./Footer";
 
 const EndPage = () => {
-  const location = useLocation();
-
   const formData = JSON.parse(localStorage.getItem("formData"));
   const userEmail = formData ? formData.email : "";
 
@@ -56,7 +53,7 @@ const EndPage = () => {
         </p>
         <p className="text-sm text-center mb-14">
           Wrong email address?{" "}
-          <span className="text-pink-600 text-center cursor-pointer">
+          <span className="text-pink-600 text-center cursor-pointer" onClick={handleChangeEmail}>
             Change it
           </span>
         </p>

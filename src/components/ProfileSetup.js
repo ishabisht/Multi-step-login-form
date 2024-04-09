@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect } from "react";
+import React, { useRef, useState, useEffect,useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
@@ -12,6 +12,24 @@ const ProfileSetup = () => {
   const [locationError, setLocationError] = useState("");
   const [allFieldsFilled, setAllFieldsFilled] = useState(false);
   const [imageSizeError, setImageSizeError] = useState("");
+  const handleBeforeUnload = () => {
+    localStorage.removeItem("avatarImage");
+    localStorage.removeItem("location");
+  };
+
+  const checkAllFieldsFilled = useCallback(
+    (storedImageData, storedLocationData) => {
+      const storedLocation =
+        storedLocationData || localStorage.getItem("location");
+      const avatarImageData = storedImageData || avatarImage;
+      if ((location.trim() || storedLocation) && avatarImageData) {
+        setAllFieldsFilled(true);
+      } else {
+        setAllFieldsFilled(false);
+      }
+    },
+    [avatarImage, location]
+  );
 
   useEffect(() => {
     const storedImage = localStorage.getItem("avatarImage");
@@ -23,9 +41,14 @@ const ProfileSetup = () => {
 
     if (storedLocation) {
       setLocation(storedLocation);
-      checkAllFieldsFilled(storedImage, storedLocation); 
     }
-  }, []);
+
+    checkAllFieldsFilled(storedImage, storedLocation);
+    window.addEventListener("beforeunload", handleBeforeUnload);
+    return () => {
+      window.removeEventListener("beforeunload", handleBeforeUnload);
+    };
+  }, [checkAllFieldsFilled]);
 
   const handleChooseImage = () => {
     fileInputRef.current.click(); 
@@ -56,16 +79,7 @@ const ProfileSetup = () => {
     checkAllFieldsFilled(); 
   };
 
-  const checkAllFieldsFilled = (storedImageData, storedLocationData) => {
-    const storedLocation =
-      storedLocationData || localStorage.getItem("location");
-    const avatarImageData = storedImageData || avatarImage;
-    if ((location.trim() || storedLocation) && avatarImageData) {
-      setAllFieldsFilled(true);
-    } else {
-      setAllFieldsFilled(false);
-    }
-  };
+  
 
   const handleNext = () => {
     const storedLocation = localStorage.getItem("location");

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate,Link } from "react-router-dom";
 import Firstimg from "../img/Firstimg.png";
 import Dribble from "../img/Brown.png";
 
@@ -10,6 +10,9 @@ const SignUpForm = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isChecked, setIsChecked] = useState(false);
+  const handleBeforeUnload = () => {
+    localStorage.removeItem("formData");
+  };
 
   useEffect(() => {
     const storedFormData = JSON.parse(localStorage.getItem("formData"));
@@ -17,14 +20,17 @@ const SignUpForm = () => {
       setName(storedFormData.name);
       setUsername(storedFormData.username);
       setEmail(storedFormData.email);
-      setPassword(storedFormData.password);
-      setIsChecked(storedFormData.isChecked);
+      setPassword(storedFormData.password);  
     }
+    window.addEventListener("beforeunload", handleBeforeUnload);
+    return () => {
+      window.removeEventListener("beforeunload", handleBeforeUnload);
+    };
   }, []);
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    const formData = { name, username, email, password, isChecked };
+    const formData = { name, username, email, password };
     localStorage.setItem("formData", JSON.stringify(formData));
     navigate("/profile-setup");
   };
@@ -35,12 +41,12 @@ const SignUpForm = () => {
   };
 
   
+
   const validateForm = () => {
     return (
       name.trim() !== "" &&
       /^[a-zA-Z\s]+$/.test(name) && 
       /^[a-zA-Z0-9_]+$/.test(username) && 
-      /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email) && 
       password.length >= 6 && 
       isChecked 
     );
@@ -123,17 +129,8 @@ const SignUpForm = () => {
                 placeholder="account@refero.design"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className={`w-full bg-gray-100 border border-gray-300 rounded-md py-2 px-3 ${
-                  email !== "" &&
-                  !/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email)
-                    ? "bg-red-100 text-red-500"
-                    : ""
-                }`}
+                className="w-full bg-gray-100 border border-gray-300 rounded-md py-2 px-3"
               />
-              {email !== "" &&
-                !/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(
-                  email
-                ) && <p className="text-red-500">Invalid email address</p>}
             </div>
             <div className="mb-4">
               <label htmlFor="password" className="block font-bold mb-2">
@@ -193,9 +190,9 @@ const SignUpForm = () => {
           <div className="absolute top-0 right-0 mt-4">
             <p>
               Already a Member?{" "}
-              <a href="#" className="underline">
+              <Link href="#" className="underline">
                 <span className="text-purple-600">Sign In</span>
-              </a>
+              </Link>
             </p>
           </div>
         </div>

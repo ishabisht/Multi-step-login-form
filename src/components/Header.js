@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faSearch,
@@ -61,20 +62,20 @@ const Header = () => {
 
       <nav className="w-full lg:w-auto mb-2 lg:mb-0">
         <ul className="flex justify-center lg:justify-start space-x-2 lg:space-x-4 text-sm">
-          <li>
-            <a href="#">Inspiration</a>
+        <li>
+            <Link to="/">Inspiration</Link>
           </li>
           <li>
-            <a href="#">Find Work</a>
+            <Link to="/">Find Work</Link>
           </li>
           <li>
-            <a href="#">Learn Design</a>
+            <Link to="/">Learn Design</Link>
           </li>
           <li>
-            <a href="#">Go Pro</a>
+            <Link to="/">Go Pro</Link>
           </li>
           <li>
-            <a href="#">Hire Designer</a>
+            <Link to="/">Hire Designer</Link>
           </li>
         </ul>
       </nav>
